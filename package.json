@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node server/index.js"
+    "server": "node server/index.js",
+    "client": "npm run start --prefix client",
+    "app": "concurrently npm \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "Muhamed Begic",
@@ -23,5 +25,8 @@
     "mongoose": "^8.2.4",
     "nodemailer": "^6.9.13",
     "stripe": "^14.23.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
