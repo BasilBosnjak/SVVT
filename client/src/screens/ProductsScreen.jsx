@@ -1,6 +1,6 @@
-import { Box, Wrap, WrapItem, Center } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { Box, Wrap, WrapItem, Center, Button } from "@chakra-ui/react";
+import { MdArrowLeft, MdArrowRight } from "react-icons/md";
+import { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -9,13 +9,16 @@ import { getProducts } from "../redux/actions/productActions";
 
 const ProductsScreen = () => {
   const dispatch = useDispatch();
-  const { loading, error, products, pagination } = useSelector(
-    (state) => state.product
-  );
+  const { loading, error, products, pagination, favoritesToggled } =
+    useSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts(1));
   }, [dispatch]);
+
+  const paginationButtonHandler = (page) => {
+    dispatch(getProducts(page));
+  };
 
   return (
     <>
@@ -35,6 +38,35 @@ const ProductsScreen = () => {
               </WrapItem>
             ))}
           </Wrap>
+          {!favoritesToggled && (
+            <Wrap justify={"center"} justifyContent={"center"} padding={4}>
+              <Button
+                colorScheme="cyan"
+                onClick={() => paginationButtonHandler(1)}
+              >
+                <MdArrowLeft size={30} />
+              </Button>
+              {Array.from(Array(pagination.totalPages), (e, i) => {
+                return (
+                  <Button
+                    colorScheme={
+                      pagination.currentPage === i + 1 ? "cyan" : "gray"
+                    }
+                    key={i}
+                    onClick={() => paginationButtonHandler(i + 1)}
+                  >
+                    {i + 1}
+                  </Button>
+                );
+              })}
+              <Button
+                colorScheme="cyan"
+                onClick={() => paginationButtonHandler(pagination.totalPages)}
+              >
+                <MdArrowRight size={30} />
+              </Button>
+            </Wrap>
+          )}
         </Box>
       )}
     </>
