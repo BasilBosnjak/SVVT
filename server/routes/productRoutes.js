@@ -23,7 +23,32 @@ const getProducts = async (req, res) => {
   }
 };
 
+const getProductById = async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found!");
+  } else {
+    res.json(product);
+  }
+};
+
+/*
+const getProductsByCategory = async (req, res) => {
+  const { category } = req.params;
+  const products = await Product.find({ category: category });
+  if (!products) {
+    res.status(404);
+    throw new Error("Products by category not found!");
+  } else {
+    res.json(products);
+  }
+};
+*/
+
 productRoutes.route("/").get(getProducts);
 productRoutes.route("/:page/:limit").get(getProducts);
+productRoutes.route("/:id").get(getProductById);
+//productRoutes.route("/category/:category").get(getProductsByCategory);
 
 export default productRoutes;
