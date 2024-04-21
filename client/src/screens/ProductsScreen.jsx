@@ -1,4 +1,15 @@
-import { Box, Wrap, WrapItem, Center, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Wrap,
+  WrapItem,
+  Center,
+  Button,
+  Alert,
+  AlertIcon,
+  AlertDialog,
+  AlertDescription,
+  AlertTitle,
+} from "@chakra-ui/react";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import { useEffect } from "react";
 
@@ -22,7 +33,7 @@ const ProductsScreen = () => {
 
   return (
     <>
-      {products.length > 1 && (
+      {products.length >= 1 && (
         <Box>
           <Wrap
             spacing={"30px"}
@@ -30,13 +41,21 @@ const ProductsScreen = () => {
             minHeight={"80vh"}
             mx={{ base: 12, md: 20, lg: 32 }}
           >
-            {products.map((product) => (
-              <WrapItem key={product._id}>
-                <Center width={250} height={450}>
-                  <ProductCard product={product} isLoading={loading} />
-                </Center>
-              </WrapItem>
-            ))}
+            {error ? (
+              <Alert status="error">
+                <AlertIcon />
+                <AlertTitle>Sorry :( </AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            ) : (
+              products.map((product) => (
+                <WrapItem key={product._id}>
+                  <Center width={250} height={450}>
+                    <ProductCard product={product} isLoading={loading} />
+                  </Center>
+                </WrapItem>
+              ))
+            )}
           </Wrap>
           {!favoritesToggled && (
             <Wrap justify={"center"} justifyContent={"center"} padding={4}>
