@@ -1,11 +1,11 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { BiExpand } from "react-icons/bi";
 import {
   addToFavorites,
   removeFromFavorites,
 } from "../redux/actions/productActions";
 import { useSelector, useDispatch } from "react-redux";
+import { Link as ReactLink } from "react-router-dom";
 import { MdOutlineFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
 
 import {
@@ -21,6 +21,7 @@ import {
 const ProductCard = ({ product, isLoading }) => {
   const dispatch = useDispatch();
   const { favorites } = useSelector((state) => state.product);
+  const [isShown, setIsShown] = useState(false);
   return (
     <Skeleton isLoaded={!isLoading} _hover={{ size: 1.5 }}>
       <Box
@@ -31,7 +32,13 @@ const ProductCard = ({ product, isLoading }) => {
         shadow="md"
       >
         <Image
-          src={product.images[0]}
+          src={
+            isShown && product.images.length === 2
+              ? product.images[1]
+              : product.images[0]
+          }
+          onMouseEnter={() => setIsShown(true)}
+          onMouseLeave={() => setIsShown(false)}
           fallbackSrc={"https://via.placeholder.com/150"}
           alt={product.name}
           height={180}
@@ -81,6 +88,8 @@ const ProductCard = ({ product, isLoading }) => {
             icon={<BiExpand size={20} />}
             colorScheme={"cyan"}
             size="sm"
+            as={ReactLink}
+            to={`/product/${product._id}`}
           />
         </Flex>
       </Box>
