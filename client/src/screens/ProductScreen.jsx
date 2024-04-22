@@ -36,9 +36,9 @@ const ProductScreen = () => {
 
   const changeAmount = (input) => {
     if (input === "plus") {
-      setAmount(++amount);
+      setAmount((prevAmount) => prevAmount + 1);
     } else if (input === "minus") {
-      setAmount(--amount);
+      setAmount((prevAmount) => prevAmount - 1);
     }
   };
 
