@@ -32,11 +32,7 @@ const ProductCard = ({ product, isLoading }) => {
         shadow="md"
       >
         <Image
-          src={
-            isShown && product.images.length === 2
-              ? product.images[1]
-              : product.images[0]
-          }
+          src={product.images[isShown && product.images.length === 2 ? 1 : 0]}
           onMouseEnter={() => setIsShown(true)}
           onMouseLeave={() => setIsShown(false)}
           fallbackSrc={"https://via.placeholder.com/150"}
