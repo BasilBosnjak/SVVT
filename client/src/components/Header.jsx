@@ -11,7 +11,7 @@ import {
 import { MdOutlineFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
 import { toggleFavorites } from "../redux/actions/productActions";
 import { useEffect } from "react";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useLocation } from "react-router-dom";
 import NavLink from "./NavLink";
 import ToggleColorMode from "./ToggleColorMode";
 import { BsLaptop } from "react-icons/bs";
@@ -30,6 +30,7 @@ export const Header = () => {
   const dispatch = useDispatch();
   const { favoritesToggled } = useSelector((state) => state.product);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const location = useLocation();
   useEffect(() => {}, [favoritesToggled, dispatch]);
 
   return (
@@ -68,19 +69,20 @@ export const Header = () => {
               </NavLink>
             ))}
             <ToggleColorMode />
-            {favoritesToggled ? (
-              <IconButton
-                icon={<MdOutlineFavorite size={20} />}
-                onClick={() => dispatch(toggleFavorites(false))}
-                variant={"ghost"}
-              />
-            ) : (
-              <IconButton
-                icon={<MdOutlineFavoriteBorder size={20} />}
-                onClick={() => dispatch(toggleFavorites(true))}
-                variant={"ghost"}
-              />
-            )}
+            {location.pathname !== "/" &&
+              (favoritesToggled ? (
+                <IconButton
+                  icon={<MdOutlineFavorite size={20} />}
+                  onClick={() => dispatch(toggleFavorites(false))}
+                  variant={"ghost"}
+                />
+              ) : (
+                <IconButton
+                  icon={<MdOutlineFavoriteBorder size={20} />}
+                  onClick={() => dispatch(toggleFavorites(true))}
+                  variant={"ghost"}
+                />
+              ))}
           </HStack>
         </HStack>
         <Flex alignItems={"center"}>
