@@ -16,6 +16,7 @@ import NavLink from "./NavLink";
 import ToggleColorMode from "./ToggleColorMode";
 import { BsLaptop } from "react-icons/bs";
 import { BiUserCheck } from "react-icons/bi";
+import { TbShoppingCart } from "react-icons/tb";
 import { useColorModeValue as colorMode } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
@@ -29,6 +30,7 @@ const Links = [
 export const Header = () => {
   const dispatch = useDispatch();
   const { favoritesToggled } = useSelector((state) => state.product);
+  const { cartItems } = useSelector((state) => state.cart);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const location = useLocation();
   useEffect(() => {}, [favoritesToggled, dispatch]);
@@ -43,6 +45,26 @@ export const Header = () => {
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             onClick={isOpen ? onClose : onOpen}
           />
+          <IconButton
+            marginLeft={"12"}
+            position={"absolute"}
+            as={ReactLink}
+            icon={<TbShoppingCart size="20px" />}
+            to={"/cart"}
+            variant={"ghost"}
+          />
+          {cartItems.length > 0 && (
+            <Text
+              fontWeight={"bold"}
+              fontStyle={"italic"}
+              position={"absolute"}
+              marginLeft={"75px"}
+              marginTop={"-6"}
+              fontSize={"small"}
+            >
+              {cartItems.length}
+            </Text>
+          )}
         </Flex>
         <HStack spacing={"8"} alignItems={"center"}>
           <Box alignItems={"center"} display={"flex"} as={ReactLink} to={"/"}>
@@ -68,6 +90,28 @@ export const Header = () => {
                 </Text>
               </NavLink>
             ))}
+
+            <Box>
+              <IconButton
+                as={ReactLink}
+                icon={<TbShoppingCart size="20px" />}
+                to={"/cart"}
+                variant={"ghost"}
+              />
+              {cartItems.length > 0 && (
+                <Text
+                  fontWeight={"bold"}
+                  fontStyle={"italic"}
+                  position={"absolute"}
+                  marginLeft={"25px"}
+                  marginTop={"-6"}
+                  fontSize={"small"}
+                >
+                  {cartItems.length}
+                </Text>
+              )}
+            </Box>
+
             <ToggleColorMode />
             {location.pathname !== "/" &&
               (favoritesToggled ? (
