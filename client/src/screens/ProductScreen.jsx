@@ -19,16 +19,20 @@ import {
   Button,
   Image,
   SimpleGrid,
+  useToast,
 } from "@chakra-ui/react";
 import Star from "../components/Star";
 import { MinusIcon, PlusIcon, SmallAddIcon } from "@chakra-ui/icons";
 import { BiCheckShield, BiPackage, BiSupport } from "react-icons/bi";
+import { addCartItem } from "../redux/actions/cartActions";
 
 const ProductScreen = () => {
   let [amount, setAmount] = useState(1);
   const { id } = useParams();
   const dispatch = useDispatch();
   const { loading, error, product } = useSelector((state) => state.product);
+  const { cartItems } = useSelector((state) => state.cart);
+  const toast = useToast();
 
   useEffect(() => {
     dispatch(getProduct(id));
@@ -40,6 +44,20 @@ const ProductScreen = () => {
     } else if (input === "minus") {
       setAmount((prevAmount) => prevAmount - 1);
     }
+  };
+
+  const addItem = () => {
+    if (cartItems.some((cartItem) => cartItem.id === id)) {
+      const item = cartItems.find((cartItem) => cartItem.id === id);
+      dispatch(addCartItem(id, item.qty + amount));
+    } else {
+      dispatch(addCartItem(id, amount));
+    }
+    toast({
+      description: "Item has been added",
+      status: "success",
+      isClosable: true,
+    });
   };
 
   return (
@@ -160,6 +178,7 @@ const ProductScreen = () => {
                     colorScheme="cyan"
                     width={"50%"}
                     alignSelf={"center"}
+                    onClick={() => addItem()}
                   >
                     Add to cart
                   </Button>
