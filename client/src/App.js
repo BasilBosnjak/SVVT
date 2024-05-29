@@ -13,6 +13,10 @@ import RegisterScreen from "./screens/RegisterScreen";
 import { VStack, Spinner } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import useGoogleClient from "./hooks/useGoogleClient";
+import CheckoutScreen from "./screens/CheckoutScreen";
+import CancelScreen from "./screens/CancelScreen";
+import OrdersScreen from "./screens/OrdersScreen";
+import SuccessScreen from "./screens/SuccessScreen";
 
 function App() {
   const googleClient = useGoogleClient();
@@ -49,6 +53,10 @@ function App() {
                 path={"/password-reset/:token"}
                 element={<PasswordResetScreen />}
               />
+              <Route path={"/success"} element={<SuccessScreen />} />
+              <Route path={"/order-history"} element={<OrdersScreen />} />
+              <Route path={"/cancel"} element={<CancelScreen />} />
+              <Route path={"/checkout"} element={<CheckoutScreen />} />
             </Routes>
           </main>
           <Footer />
