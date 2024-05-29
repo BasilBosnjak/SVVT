@@ -200,11 +200,11 @@ export const getUserOrders = () => async (dispatch, getState) => {
     const config = {
       headers: {
         Authorization: `Bearer ${userInfo.token}`,
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
       },
     };
 
-    const { data } = await axios.post(`api/users/${userInfo._id}`, config);
+    const { data } = await axios.get(`api/users/${userInfo._id}`, config);
     dispatch(setUserOrders(data));
   } catch (error) {
     dispatch(

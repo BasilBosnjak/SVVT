@@ -182,6 +182,6 @@ userRoutes.route("/verify-email").get(protectRoute, verifyEmail);
 userRoutes.route("/password-reset-request").post(passwordResetRequest);
 userRoutes.route("/password-reset").post(passwordReset);
 userRoutes.route("/google-login").post(googleLogin);
-userRoutes.route("/:id").post(protectRoute, getUserOrders);
+userRoutes.route("/:id").get(protectRoute, getUserOrders);
 
 export default userRoutes;

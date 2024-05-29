@@ -76,7 +76,7 @@ const OrdersScreen = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {orders.map((order) => {
+                {orders.map((order) => (
                   <Tr key={order._id}>
                     <Td>{order._id}</Td>
                     <Td>{new Date(order.createdAt).toString()}</Td>
@@ -85,7 +85,7 @@ const OrdersScreen = () => {
                       {order.orderItems.map((item) => (
                         <UnorderedList key={item._id}>
                           <ListItem>
-                            {item.qty} x {item.name}
+                            {item.qty} x {item.name} (${item.price} per item)
                           </ListItem>
                         </UnorderedList>
                       ))}
@@ -93,8 +93,8 @@ const OrdersScreen = () => {
                     <Td>
                       <Button variant={"outline"}>Receipt</Button>
                     </Td>
-                  </Tr>;
-                })}
+                  </Tr>
+                ))}
               </Tbody>
             </Table>
           </TableContainer>
