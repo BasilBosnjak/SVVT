@@ -8,10 +8,16 @@ import databaseConnection from "./db.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
+// Middleware
+import logger from "./middleware/loggerMiddleware.js";
+
 databaseConnection();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// logging middleware, *use before routes
+app.use(logger);
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
