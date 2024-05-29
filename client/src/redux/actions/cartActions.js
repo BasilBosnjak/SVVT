@@ -47,6 +47,6 @@ export const setShipping = (value) => (dispatch) => {
   dispatch(setShippingCosts(value));
 };
 
-export const resetCard = () => (dispatch) => {
+export const resetCart = () => (dispatch) => {
   dispatch(clearCart());
 };

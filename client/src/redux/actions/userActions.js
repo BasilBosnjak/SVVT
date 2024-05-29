@@ -1,5 +1,5 @@
 import axios from "axios";
-import user, {
+import {
   setLoading,
   setError,
   setServerResponseMsg,
@@ -188,3 +188,33 @@ export const googleLogin =
       );
     }
   };
+
+export const getUserOrders = () => async (dispatch, getState) => {
+  dispatch(setLoading(true));
+
+  const {
+    user: { userInfo },
+  } = getState();
+
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+        "Content-type": "application/json",
+      },
+    };
+
+    const { data } = await axios.post(`api/users/${userInfo._id}`, config);
+    dispatch(setUserOrders(data));
+  } catch (error) {
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error occured, try again later!"
+      )
+    );
+  }
+};
