@@ -10,20 +10,12 @@ import LoginScreen from "./screens/LoginScreen";
 import EmailVerificationScreen from "./screens/EmailVerificationScreen";
 import PasswordResetScreen from "./screens/PasswordResetScreen";
 import RegisterScreen from "./screens/RegisterScreen";
-import axios from "axios";
 import { VStack, Spinner } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import useGoogleClient from "./hooks/useGoogleClient";
 
 function App() {
-  const [googleClient, setGoogleClient] = useState(null);
-  useEffect(() => {
-    const googleKey = async () => {
-      const { data: googleId } = await axios.get(`/api/config/google`);
-      setGoogleClient(googleId);
-    };
-    googleKey();
-  }, [googleClient]);
+  const googleClient = useGoogleClient();
 
   return !googleClient ? (
     <VStack paddingTop={"38vh"}>
