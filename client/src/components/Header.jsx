@@ -35,6 +35,8 @@ import { useDisclosure } from "@chakra-ui/react";
 import { ChevronDownIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { logout } from "../redux/actions/userActions";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import { FcGoogle } from "react-icons/fc";
+import { googleLogout } from "@react-oauth/google";
 
 const Links = [
   { name: "Products", route: "/products" },
@@ -63,6 +65,7 @@ export const Header = () => {
   }, [userInfo, favoritesToggled, dispatch]);
 
   const handleLogout = () => {
+    googleLogout();
     dispatch(logout());
     toast({
       description: "Logged out successfully!",
@@ -176,7 +179,16 @@ export const Header = () => {
                   minWidth={"0"}
                 >
                   <HStack>
-                    <BiUserCheck size={"30"} />
+                    {userInfo.googleImage ? (
+                      <Image
+                        borderRadius={"full"}
+                        boxSize={"42px"}
+                        src={userInfo.googleImage}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <BiUserCheck size={"30"} />
+                    )}
                     <ChevronDownIcon />
                   </HStack>
                 </MenuButton>
@@ -185,6 +197,7 @@ export const Header = () => {
                     <Text paddingLeft={"3"} as={"i"}>
                       {userInfo.email}
                     </Text>
+                    {userInfo.googleId && <FcGoogle />}
                   </HStack>
                   <Divider paddingY={"1"} />
                   <MenuItem as={ReactLink} to={"/order-history"}>

@@ -22,6 +22,10 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+app.get("/api/config/google", (req, res) => {
+  res.send(process.env.GOOGLE_CLIENT_ID);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port: ${PORT}`);
 });
