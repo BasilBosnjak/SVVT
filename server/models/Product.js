@@ -6,7 +6,7 @@ const reviewSchema = new mongoose.Schema(
     rating: { type: Number, required: true },
     comment: { type: String, required: true },
     title: { type: String, required: true },
-    // TODO: add ref to user schema later after implementing user schema
+    user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
   },
   { timestamps: true }
 );
