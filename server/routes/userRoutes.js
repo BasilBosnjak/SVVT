@@ -4,7 +4,7 @@ import expressAsyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../middleware/sendVerificationEmail.js";
 import { sendPasswordResetEmail } from "../middleware/sendPasswordResetEmail.js";
-import { protectRoute } from "../middleware/authMiddleware.js";
+import { isAdmin, protectRoute } from "../middleware/authMiddleware.js";
 import Order from "../models/Order.js";
 
 const userRoutes = express.Router();
@@ -176,12 +176,29 @@ const getUserOrders = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const getUsers = expressAsyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+const deleteUserById = expressAsyncHandler(async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    res.json(user);
+  } catch (error) {
+    res.status(400);
+    throw new Error("User could not be deleted!");
+  }
+});
+
 userRoutes.route("/login").post(loginUser);
 userRoutes.route("/register").post(registerUser);
 userRoutes.route("/verify-email").get(protectRoute, verifyEmail);
 userRoutes.route("/password-reset-request").post(passwordResetRequest);
-userRoutes.route("/password-reset").post(passwordReset);
+userRoutes.route("/password-reset").post(passwordReset, protectRoute);
 userRoutes.route("/google-login").post(googleLogin);
 userRoutes.route("/:id").get(protectRoute, getUserOrders);
+userRoutes.route("/").get(getUsers, protectRoute, isAdmin);
+userRoutes.route("/:id").delete(deleteUserById, protectRoute, isAdmin);
 
 export default userRoutes;
