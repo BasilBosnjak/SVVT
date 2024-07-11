@@ -30,6 +30,20 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     reviews: [reviewSchema],
+    rating: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    numberOfReviews: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    productIsNew: {
+      type: Boolean,
+      default: false,
+    },
     images: {
       type: Array,
       required: true,
@@ -38,6 +52,9 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
+    },
+    stripeId: {
+      type: String,
     },
   },
   { timestamps: true }
