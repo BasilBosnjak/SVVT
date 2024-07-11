@@ -4,6 +4,7 @@ import e from "express";
 import Stripe from "stripe";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
 
 const stripe = new Stripe(process.env.STRIPE_API_SECRET);
 
@@ -65,6 +66,6 @@ const stripePayment = async (req, res) => {
   );
 };
 
-stripeRoute.route("/").post(stripePayment);
+stripeRoute.route("/").post(protectRoute, stripePayment);
 
 export default stripeRoute;
