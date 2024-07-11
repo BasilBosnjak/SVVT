@@ -26,4 +26,15 @@ const protectRoute = expressAsyncHandler(async (req, res, next) => {
   }
 });
 
-export { protectRoute };
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.send(403);
+    throw new Error(
+      "Unathorized, you don't have permission to view this content."
+    );
+  }
+};
+
+export { protectRoute, isAdmin };
