@@ -8,6 +8,7 @@ import databaseConnection from "./db.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import stripeRoute from "./routes/stripeRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 // Middleware
 import logger from "./middleware/loggerMiddleware.js";
@@ -23,6 +24,7 @@ app.use(logger);
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/checkout", stripeRoute);
+app.use("/api/orders", orderRoutes);
 
 const PORT = 5001;
 
