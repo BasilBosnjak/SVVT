@@ -1,7 +1,8 @@
 import express from "express";
 import Product from "../models/Product.js";
 import User from "../models/User.js";
-import { protectRoute } from "../middleware/authMiddleware.js";
+import { isAdmin, protectRoute } from "../middleware/authMiddleware.js";
+import expressAsyncHandler from "express-async-handler";
 
 const productRoutes = express.Router();
 
@@ -86,10 +87,135 @@ const createProductReview = async (req, res) => {
   }
 };
 
+const createNewProduct = expressAsyncHandler(async (req, res) => {
+  const {
+    name,
+    images,
+    brand,
+    category,
+    stock,
+    price,
+    productIsNew,
+    description,
+    subtitle,
+    stripeId,
+  } = req.body;
+
+  const newProduct = await Product.create({
+    name,
+    images,
+    brand,
+    category,
+    stock,
+    price,
+    productIsNew,
+    description,
+    subtitle,
+    stripeId,
+  });
+
+  await newProduct.save();
+
+  const products = await Product.find({});
+
+  if (newProduct) {
+    res.json(products);
+  } else {
+    res.status(400);
+    throw new Error("Product could not be created.");
+  }
+});
+
+const updateProduct = expressAsyncHandler(async (req, res) => {
+  const {
+    name,
+    images,
+    brand,
+    category,
+    stock,
+    price,
+    productIsNew,
+    description,
+    id,
+    subtitle,
+    stripeId,
+    imageOne,
+    imageTwo,
+  } = req.body;
+
+  const product = await Product.findById(id);
+
+  if (!product) {
+    res.status(404);
+    throw new Error("Product could not be found!");
+  } else {
+    product.name = name;
+    product.price = price;
+    product.brand = brand;
+    product.stock = stock;
+    product.description = description;
+    product.productIsNew = productIsNew;
+    product.category = category;
+    product.images = images;
+    product.subtitle = subtitle;
+    product.stripeId = stripeId;
+    product.images = [imageOne, imageTwo];
+
+    const updatedProduct = await product.save();
+
+    res.json(updatedProduct);
+  }
+});
+
+const removeProductReview = expressAsyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+
+  const updatedReviews = product.reviews.filter(
+    (review) => review._id.valueOf() != req.params.reviewId
+  );
+
+  if (product) {
+    product.reviews = updatedReviews;
+
+    product.numberOfReviews = product.reviews.length;
+
+    if (product.numberOfReviews > 0) {
+      product.rating =
+        product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+        product.reviews.length;
+    } else {
+      product.rating = 5;
+    }
+    await product.save();
+    const products = await Product.find({});
+    res.json(products);
+  } else {
+    res.status(404);
+    throw new Error("Product not found!");
+  }
+});
+
+const deleteProductById = expressAsyncHandler(async (req, res) => {
+  const product = await Product.findByIdAndDelete(req.params.id);
+
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found!");
+  } else {
+    res.json(product);
+  }
+});
+
 productRoutes.route("/").get(getProducts);
 productRoutes.route("/:page/:limit").get(getProducts);
 productRoutes.route("/:id").get(getProductById);
 productRoutes.route("/reviews/:id").post(protectRoute, createProductReview);
 //productRoutes.route("/category/:category").get(getProductsByCategory);
+productRoutes.route("/:id").delete(protectRoute, isAdmin, deleteProductById);
+productRoutes.route("/").post(protectRoute, isAdmin, createNewProduct);
+productRoutes.route("/").put(protectRoute, isAdmin, updateProduct);
+productRoutes
+  .route("/:id/:reviewId")
+  .put(protectRoute, isAdmin, removeProductReview);
 
 export default productRoutes;
