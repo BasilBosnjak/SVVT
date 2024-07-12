@@ -3,6 +3,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import databaseConnection from "./db.js";
+import path from "path";
 
 // Routes
 import productRoutes from "./routes/productRoutes.js";
@@ -27,6 +28,16 @@ app.use("/api/checkout", stripeRoute);
 app.use("/api/orders", orderRoutes);
 
 const PORT = 5001;
+
+const __dirname = path.resolve();
+app.use("/live", express.static(path.join(__dirname, "/live")));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/build")));
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+  );
+}
 
 app.get("/", (req, res) => {
   res.send("API is running...");
