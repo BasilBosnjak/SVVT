@@ -13,7 +13,7 @@ const getOrders = async (req, res) => {
 const getOrderById = expressAsyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
   if (!order) {
-    res.status(404);
+    res.status(404).send("Order not found.");
     throw new Error("Order not found.");
   } else {
     res.json(order);
@@ -25,7 +25,7 @@ const deleteOrderById = expressAsyncHandler(async (req, res) => {
   if (order) {
     res.json(order);
   } else {
-    res.status(400);
+    res.status(400).send("Order could not be deleted.");
     throw new Error("Order could not be deleted.");
   }
 });
@@ -37,7 +37,7 @@ const setDelivered = expressAsyncHandler(async (req, res) => {
     const updatedOrder = await order.save();
     res.json(updatedOrder);
   } else {
-    res.status(400);
+    res.status(400).send("Order could not be updated");
     throw new Error("Order could not be updated");
   }
 });

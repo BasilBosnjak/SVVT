@@ -10,7 +10,7 @@ import Order from "../models/Order.js";
 const userRoutes = express.Router();
 
 const genToken = (id) => {
-  return jwt.sign({ id }, process.env.TOKEN_SECRET, { expiresIn: "60d" }); // change expiresIn value before deploying live
+  return jwt.sign({ id }, process.env.TOKEN_SECRET, { expiresIn: "2h" }); // change expiresIn value before deploying live
 };
 
 const loginUser = expressAsyncHandler(async (req, res) => {
@@ -169,7 +169,7 @@ const googleLogin = expressAsyncHandler(async (req, res) => {
 const getUserOrders = expressAsyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.params.id });
   if (!orders) {
-    res.status(404);
+    res.status(404).send("No orders could be found!");
     throw new Error("No Orders found!");
   } else {
     res.status(200).json(orders);
@@ -186,7 +186,7 @@ const deleteUserById = expressAsyncHandler(async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     res.json(user);
   } catch (error) {
-    res.status(400);
+    res.status(404).send("User not found!");
     throw new Error("User could not be deleted!");
   }
 });

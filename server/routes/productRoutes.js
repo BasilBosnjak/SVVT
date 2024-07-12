@@ -29,7 +29,7 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (!product) {
-    res.status(404);
+    res.status(404).send("Product not found!");
     throw new Error("Product not found!");
   } else {
     res.json(product);
@@ -82,7 +82,7 @@ const createProductReview = async (req, res) => {
     await product.save();
     res.status(201).json({ message: "Review saved successfully." });
   } else {
-    res.status(404);
+    res.status(404).send("Product not found!");
     throw new Error("Product does not exist.");
   }
 };
@@ -121,7 +121,7 @@ const createNewProduct = expressAsyncHandler(async (req, res) => {
   if (newProduct) {
     res.json(products);
   } else {
-    res.status(400);
+    res.status(400).send("Product could not be created.");
     throw new Error("Product could not be created.");
   }
 });
@@ -146,7 +146,7 @@ const updateProduct = expressAsyncHandler(async (req, res) => {
   const product = await Product.findById(id);
 
   if (!product) {
-    res.status(404);
+    res.status(404).send("Product could not be found!");
     throw new Error("Product could not be found!");
   } else {
     product.name = name;
@@ -190,7 +190,7 @@ const removeProductReview = expressAsyncHandler(async (req, res) => {
     const products = await Product.find({});
     res.json(products);
   } else {
-    res.status(404);
+    res.status(404).send("Product not found!");
     throw new Error("Product not found!");
   }
 });
@@ -199,7 +199,7 @@ const deleteProductById = expressAsyncHandler(async (req, res) => {
   const product = await Product.findByIdAndDelete(req.params.id);
 
   if (!product) {
-    res.status(404);
+    res.status(404), send("Product not found!");
     throw new Error("Product not found!");
   } else {
     res.json(product);
