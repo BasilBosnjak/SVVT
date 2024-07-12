@@ -160,7 +160,20 @@ export const resetErrorAndRemoval = () => async (dispatch) => {
 };
 
 export const updateProduct =
-  (category, brand, name, productIsNew, stock, price, id, description) =>
+  (
+    category,
+    brand,
+    name,
+    productIsNew,
+    stock,
+    price,
+    id,
+    description,
+    subtitle,
+    stripeId,
+    imageOne,
+    imageTwo
+  ) =>
   async (dispatch, getState) => {
     const {
       user: { userInfo },
@@ -175,8 +188,21 @@ export const updateProduct =
 
     try {
       await axios.put(
-        `api/products`,
-        { category, brand, name, productIsNew, stock, price, id, description },
+        `api/products/`,
+        {
+          category,
+          brand,
+          name,
+          productIsNew,
+          stock,
+          price,
+          id,
+          description,
+          subtitle,
+          stripeId,
+          imageOne,
+          imageTwo,
+        },
         config
       );
       dispatch(setProductUpdateFlag());
@@ -237,7 +263,7 @@ export const createProduct = (newProduct) => async (dispatch, getState) => {
   };
 
   try {
-    const { data } = await axios.post(`api/products`, { newProduct }, config);
+    const { data } = await axios.post(`api/products`, newProduct, config);
     dispatch(setProducts(data));
     dispatch(setProductUpdateFlag());
   } catch (error) {
