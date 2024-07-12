@@ -210,7 +210,8 @@ export const Header = () => {
                     <>
                       <MenuDivider />
                       <MenuItem as={ReactLink} to={"/admin-panel"}>
-                        Admin Panel
+                        <MdOutlineAdminPanelSettings />
+                        <Text ml={2}>Admin Panel</Text>
                       </MenuItem>
                     </>
                   )}
