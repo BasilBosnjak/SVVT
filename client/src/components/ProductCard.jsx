@@ -54,9 +54,10 @@ const ProductCard = ({ product, isLoading }) => {
       <Box
         _hover={{ transform: "scale(1.1)", transitionDuration: "0.5s" }}
         overflow="hidden"
-        borderWidth="1px"
+        borderWidth="2px"
         padding="4"
         shadow="md"
+        borderColor={"blue"}
       >
         <Image
           src={product.images[isShown && product.images.length === 2 ? 1 : 0]}
@@ -86,8 +87,8 @@ const ProductCard = ({ product, isLoading }) => {
           {`${product.subtitle}`}
         </Text>
         <Flex alignItems={"center"} marginTop={2} justify={"space-between"}>
-          <Badge colorScheme={"cyan"}>{product.category}</Badge>
-          <Text fontWeight={700} fontSize={"x-large"} color={"cyan.600"}>
+          <Badge colorScheme={"blue"}>{product.category}</Badge>
+          <Text fontWeight={700} fontSize={"x-large"} color={"blue.600"}>
             {`€${product.price}`}
           </Text>
         </Flex>
@@ -95,21 +96,21 @@ const ProductCard = ({ product, isLoading }) => {
           {favorites.includes(product._id) ? (
             <IconButton
               icon={<MdOutlineFavorite size={20} />}
-              colorScheme="cyan"
+              colorScheme="blue"
               size={"sm"}
               onClick={() => dispatch(removeFromFavorites(product._id))}
             />
           ) : (
             <IconButton
               icon={<MdOutlineFavoriteBorder size={20} />}
-              colorScheme="cyan"
+              colorScheme="blue"
               size={"sm"}
               onClick={() => dispatch(addToFavorites(product._id))}
             />
           )}
           <IconButton
             icon={<BiExpand size={20} />}
-            colorScheme={"cyan"}
+            colorScheme={"blue"}
             size="sm"
             as={ReactLink}
             to={`/product/${product._id}`}
@@ -128,7 +129,7 @@ const ProductCard = ({ product, isLoading }) => {
             <IconButton
               isDisabled={product.stock <= 0 || cartPlusDisabled}
               icon={<TbShoppingCartPlus size={"20px"} />}
-              colorScheme="cyan"
+              colorScheme="blue"
               size={"sm"}
               onClick={() => addItem(product._id)}
             />

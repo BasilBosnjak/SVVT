@@ -60,8 +60,9 @@ const ProductsScreen = () => {
           {!favoritesToggled && (
             <Wrap justify={"center"} justifyContent={"center"} padding={4}>
               <Button
-                colorScheme="cyan"
+                colorScheme="blue"
                 onClick={() => paginationButtonHandler(1)}
+                isDisabled={pagination.currentPage === 1}
               >
                 <MdArrowLeft size={30} />
               </Button>
@@ -69,7 +70,7 @@ const ProductsScreen = () => {
                 return (
                   <Button
                     colorScheme={
-                      pagination.currentPage === i + 1 ? "cyan" : "gray"
+                      pagination.currentPage === i + 1 ? "blue" : "gray"
                     }
                     key={i}
                     onClick={() => paginationButtonHandler(i + 1)}
@@ -79,8 +80,9 @@ const ProductsScreen = () => {
                 );
               })}
               <Button
-                colorScheme="cyan"
+                colorScheme="blue"
                 onClick={() => paginationButtonHandler(pagination.totalPages)}
+                isDisabled={pagination.currentPage === pagination.totalPages}
               >
                 <MdArrowRight size={30} />
               </Button>

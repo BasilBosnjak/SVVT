@@ -18,7 +18,7 @@ import { BsLaptop } from "react-icons/bs";
 
 const Footer = () => {
   return (
-    <Box width="100%" bg={colorMode("cyan.300", "gray.900")}>
+    <Box width="100%" bg={colorMode("blue.600", "gray.900")}>
       <Container as="footer" maxWidth="7xl">
         <Stack
           spacing="8"
@@ -32,9 +32,14 @@ const Footer = () => {
                 as={BsLaptop}
                 height="10"
                 width="10"
-                color={colorMode("black", "orange.300")}
+                color={colorMode("teal.100", "orange.500")}
               />
-              <Text fontSize="2xl" fontWeight="extrabold">
+              <Text
+                color={"teal.100"}
+                fontSize="2xl"
+                fontWeight="extrabold"
+                marginLeft={"5px"}
+              >
                 Shopium
               </Text>
             </Flex>
@@ -46,27 +51,45 @@ const Footer = () => {
           >
             <Stack direction={"row"} spacing={"8"}>
               <Stack spacing={"4"} minWidth={"36"} flex={"1"}>
-                <Text fontSize={"sm"} fontWeight={"semibold"} color={"subtle"}>
+                <Text
+                  fontSize={"sm"}
+                  fontWeight={"semibold"}
+                  color={"teal.100"}
+                >
                   Product
                 </Text>
                 <Stack spacing={"3"} shouldWrapChildren>
-                  <Button variant={"link"}>Pricing</Button>
-                  <Button variant={"link"}>How it works</Button>
+                  <Button variant={"link"} color={"teal.300"}>
+                    Pricing
+                  </Button>
+                  <Button variant={"link"} color={"teal.300"}>
+                    How it works
+                  </Button>
                 </Stack>
               </Stack>
               <Stack spacing={"4"} minWidth={"36"} flex={"1"}>
-                <Text fontSize={"sm"} fontWeight={"semibold"} color={"subtle"}>
+                <Text
+                  fontSize={"sm"}
+                  fontWeight={"semibold"}
+                  color={"teal.100"}
+                >
                   Legal
                 </Text>
                 <Stack spacing={"3"} shouldWrapChildren>
-                  <Button variant={"link"}>Terms & Conditions</Button>
-                  <Button variant={"link"}>Privacy Policy</Button>
-                  <Button variant={"link"}>License</Button>
+                  <Button variant={"link"} color={"teal.300"}>
+                    Terms & Conditions
+                  </Button>
+                  <Button variant={"link"} color={"teal.300"}>
+                    Privacy Policy
+                  </Button>
+                  <Button variant={"link"} color={"teal.300"}>
+                    License
+                  </Button>
                 </Stack>
               </Stack>
             </Stack>
             <Stack spacing={"4"}>
-              <Text fontSize={"sm"} fontWeight={"semibold"} color={"subtle"}>
+              <Text fontSize={"sm"} fontWeight={"semibold"} color={"teal.100"}>
                 Stay up to date with the latest news!
               </Text>
               <Stack
@@ -80,14 +103,20 @@ const Footer = () => {
                   type="email"
                   required
                 />
-                <Button variant={"primary"} type="submit" flexShrink={"0"} for>
+                <Button
+                  variant={"primary"}
+                  type="submit"
+                  color={"teal.100"}
+                  flexShrink={"0"}
+                  htmlFor
+                >
                   Subscribe
                 </Button>
               </Stack>
             </Stack>
           </Stack>
         </Stack>
-        <Divider borderColor={colorMode("black", "orange.300")} />
+        <Divider borderColor={colorMode("teal.100", "orange.500")} />
         <Stack
           paddingTop={"8"}
           paddingBottom={"12"}
@@ -102,16 +131,19 @@ const Footer = () => {
             <IconButton
               as={"a"}
               href="#"
+              color={colorMode("teal.100", "orange.500")}
               icon={<FaGithub fontSize={"1.5rem"} />}
             />
             <IconButton
               as={"a"}
               href="#"
+              color={colorMode("teal.100", "orange.500")}
               icon={<FaLinkedinIn fontSize={"1.5rem"} />}
             />
             <IconButton
               as={"a"}
               href="#"
+              color={colorMode("teal.100", "orange.500")}
               icon={<FaInstagram fontSize={"1.5rem"} />}
             />
           </ButtonGroup>

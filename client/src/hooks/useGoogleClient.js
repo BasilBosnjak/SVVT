@@ -9,7 +9,7 @@ const useGoogleClient = () => {
       setGoogleClient(googleId);
     };
     fetchGoogleKey();
-  }, [googleClient]);
+  }, []);
 
   return googleClient;
 };

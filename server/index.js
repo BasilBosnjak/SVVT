@@ -27,7 +27,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/checkout", stripeRoute);
 app.use("/api/orders", orderRoutes);
 
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 
 const __dirname = path.resolve();
 app.use("/live", express.static(path.join(__dirname, "/live")));

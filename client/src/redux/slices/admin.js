@@ -49,7 +49,7 @@ export const adminSlice = createSlice({
     },
     setDeliveredFlag: (state) => {
       state.loading = false;
-      state.setDeliveredFlag = true;
+      state.deliveredFlag = true;
     },
   },
 });

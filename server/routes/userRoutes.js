@@ -30,6 +30,7 @@ const loginUser = expressAsyncHandler(async (req, res) => {
       token: genToken(user._id),
       firstLogin: user.firstLogin,
       created: user.createdAt,
+      active: user.active,
     });
   } else {
     res.status(401).send("Invalid Email or Password!");

@@ -76,7 +76,7 @@ export const Header = () => {
 
   return (
     <>
-      <Box bg={colorMode("cyan.300", "gray.900")} paddingX={"4"}>
+      <Box bg={colorMode("blue.600", "gray.900")} paddingX={"4"}>
         <Flex height={"16"} alignItems={"center"} justify={"space-between"}>
           <Flex display={{ base: "flex", md: "none" }} alignItems={"center"}>
             <IconButton
@@ -110,11 +110,11 @@ export const Header = () => {
             <Box alignItems={"center"} display={"flex"} as={ReactLink} to={"/"}>
               <Icon
                 as={BsLaptop}
-                color={colorMode("black", "orange.300")}
+                color={colorMode("cyan.600", "orange.500")}
                 height={"6"}
                 width={"6"}
               />
-              <Text fontWeight={"bold"} marginX={"8px"}>
+              <Text color={"teal.100"} fontWeight={"bold"} marginX={"8px"}>
                 Shopium
               </Text>
             </Box>
@@ -125,7 +125,11 @@ export const Header = () => {
             >
               {Links.map((link) => (
                 <NavLink route={link.route} key={link.route}>
-                  <Text fontWeight={"medium"} paddingX={"8px"}>
+                  <Text
+                    color={"teal.100"}
+                    fontWeight={"medium"}
+                    paddingX={"8px"}
+                  >
                     {link.name}
                   </Text>
                 </NavLink>
@@ -136,6 +140,7 @@ export const Header = () => {
                   as={ReactLink}
                   icon={<TbShoppingCart size="20px" />}
                   to={"/cart"}
+                  color={"teal.100"}
                   variant={"ghost"}
                 />
                 {cartItems.length > 0 && (
@@ -146,6 +151,7 @@ export const Header = () => {
                     marginLeft={"25px"}
                     marginTop={"-6"}
                     fontSize={"small"}
+                    color={"teal.100"}
                   >
                     {cartItems.length}
                   </Text>
@@ -159,12 +165,14 @@ export const Header = () => {
                     icon={<MdOutlineFavorite size={20} />}
                     onClick={() => dispatch(toggleFavorites(false))}
                     variant={"ghost"}
+                    color={"teal.100"}
                   />
                 ) : (
                   <IconButton
                     icon={<MdOutlineFavoriteBorder size={20} />}
                     onClick={() => dispatch(toggleFavorites(true))}
                     variant={"ghost"}
+                    color={"teal.100"}
                   />
                 ))}
             </HStack>
@@ -177,6 +185,7 @@ export const Header = () => {
                   variant="link"
                   cursor={"pointer"}
                   minWidth={"0"}
+                  color={"teal.100"}
                 >
                   <HStack>
                     {userInfo.googleImage ? (
@@ -187,7 +196,10 @@ export const Header = () => {
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <BiUserCheck size={"30"} />
+                      <>
+                        <Text>{userInfo.name}</Text>
+                        <BiUserCheck size={"30"} />
+                      </>
                     )}
                     <ChevronDownIcon />
                   </HStack>
@@ -225,6 +237,7 @@ export const Header = () => {
                   as={IconButton}
                   variant={"ghost"}
                   cursor={"pointer"}
+                  color={"teal.100"}
                   icon={<BiLogInCircle size={"25px"} />}
                 />
                 <MenuList>
@@ -245,7 +258,7 @@ export const Header = () => {
                     fontWeight={"400"}
                     variant="link"
                   >
-                    Sign Un
+                    Sign Up
                   </MenuItem>
                 </MenuList>
               </Menu>

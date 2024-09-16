@@ -46,7 +46,7 @@ const LandingScreen = () => {
                   as={BsLaptop}
                   height={12}
                   width={12}
-                  color={colorMode("cyan.500", "orange.300")}
+                  color={colorMode("blue.600", "orange.500")}
                 />
                 <Text fontSize={"4xl"} fontWeight={"bold"} marginLeft={"5px"}>
                   Shopium
@@ -56,16 +56,16 @@ const LandingScreen = () => {
                 Fulfill your tech needs
               </Heading>
             </Stack>
-            <HStack>
+            <HStack display={"flex"}>
               <Link
                 as={ReactLink}
                 to={"/products"}
-                color={colorMode("cyan.500", "orange.300")}
+                color={colorMode("blue.600", "orange.500")}
               >
                 Explore now
               </Link>
               <Icon
-                color={colorMode("cyan.500", "orange.300")}
+                color={colorMode("blue.600", "orange.500")}
                 as={FaArrowRight}
               />
             </HStack>
