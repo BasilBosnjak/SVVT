@@ -38,8 +38,8 @@ const stripePayment = async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: lineItems,
     mode: "payment",
-    success_url: `http://localhost:3000/success`,
-    cancel_url: `http://localhost:3000/cancel`,
+    success_url: `${process.env.BASE_URL}/success`,
+    cancel_url: `${process.env.BASE_URL}/cancel`,
   });
 
   const order = new Order({
@@ -50,7 +50,7 @@ const stripePayment = async (req, res) => {
     shippingAddress: data.shippingAddress,
     shippingPrice: data.shipping,
     subtotal: data.subtotal,
-    totalPrice: Number(data.subtotal + data.shipping),
+    totalPrice: Number(data.subtotal) + Number(data.shipping),
   });
 
   const newOrder = await order.save();

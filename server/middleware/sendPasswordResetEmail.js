@@ -7,7 +7,7 @@ export const sendPasswordResetEmail = (token, email, name) => {
             <h2>Dear ${name}</h2>
             <p>This is a password recovery email.</p>
             <p>Please use the link below to reset your password!</p>
-            <a href="http://localhost:3000/password-reset/${token}">Click here.</a>
+            <a href="${process.env.BASE_URL}/password-reset/${token}">Click here.</a>
             </body>
         </html>
     `;

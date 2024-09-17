@@ -10,7 +10,7 @@ export const sendVerificationEmail = (token, email, name, id) => {
             <h2>Dear ${name}</h2>
             <p>Thank you for signing up at Shopium E-commerce!</p>
             <p>Use the link below to verify your email address.</p>
-            <a href="http://localhost:3000/email-verify/${token}">Click here.</a>
+            <a href="${process.env.BASE_URL}/email-verify/${token}">Click here.</a>
             </body>
         </html>
     `;

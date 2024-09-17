@@ -42,9 +42,9 @@ const setDelivered = expressAsyncHandler(async (req, res) => {
   }
 });
 
-orderRoutes.route("/").get(getOrders, protectRoute, isAdmin);
-orderRoutes.route("/:id").put(setDelivered, protectRoute, isAdmin);
-orderRoutes.route("/:id").delete(deleteOrderById, protectRoute, isAdmin);
-orderRoutes.route("/:id").get(getOrderById, protectRoute, isAdmin);
+orderRoutes.route("/").get(protectRoute, isAdmin, getOrders);
+orderRoutes.route("/:id").put(protectRoute, isAdmin, setDelivered);
+orderRoutes.route("/:id").delete(protectRoute, isAdmin, deleteOrderById);
+orderRoutes.route("/:id").get(protectRoute, isAdmin, getOrderById);
 
 export default orderRoutes;

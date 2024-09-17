@@ -161,13 +161,13 @@ export const resetErrorAndRemoval = () => async (dispatch) => {
 
 export const updateProduct =
   (
+    id,
     category,
     brand,
     name,
     productIsNew,
     stock,
     price,
-    id,
     description,
     subtitle,
     stripeId,
@@ -187,16 +187,15 @@ export const updateProduct =
     };
 
     try {
-      await axios.put(
-        `api/products/`,
+      const { data } = await axios.put(
+        `api/products/${id}`,
         {
           category,
           brand,
           name,
-          productIsNew,
+          productIsNew: Boolean(productIsNew),
           stock,
           price,
-          id,
           description,
           subtitle,
           stripeId,
@@ -206,7 +205,7 @@ export const updateProduct =
         config
       );
       dispatch(setProductUpdateFlag());
-      dispatch(setProducts());
+      dispatch(setProducts(data));
     } catch (error) {
       dispatch(
         setError(

@@ -38,6 +38,7 @@ const ProductTableItem = ({ product }) => {
   const onSaveProduct = () => {
     dispatch(
       updateProduct(
+        product._id,
         brand,
         category,
         stock,
@@ -151,7 +152,7 @@ const ProductTableItem = ({ product }) => {
               </FormLabel>
               <Switch
                 id="productIsNewFlag"
-                onChange={() => !setProductIsNew}
+                onChange={() => setProductIsNew(!productIsNew)}
                 isChecked={productIsNew}
               />
             </FormControl>

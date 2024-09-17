@@ -136,14 +136,13 @@ const updateProduct = expressAsyncHandler(async (req, res) => {
     price,
     productIsNew,
     description,
-    id,
     subtitle,
     stripeId,
     imageOne,
     imageTwo,
   } = req.body;
 
-  const product = await Product.findById(id);
+  const product = await Product.findById(req.params.id);
 
   if (!product) {
     res.status(404).send("Product could not be found!");
@@ -154,7 +153,7 @@ const updateProduct = expressAsyncHandler(async (req, res) => {
     product.brand = brand;
     product.stock = stock;
     product.description = description;
-    product.productIsNew = productIsNew;
+    product.productIsNew = Boolean(productIsNew);
     product.category = category;
     product.images = images;
     product.subtitle = subtitle;
@@ -199,7 +198,7 @@ const deleteProductById = expressAsyncHandler(async (req, res) => {
   const product = await Product.findByIdAndDelete(req.params.id);
 
   if (!product) {
-    res.status(404), send("Product not found!");
+    res.status(404).send("Product not found!");
     throw new Error("Product not found!");
   } else {
     res.json(product);
@@ -213,7 +212,7 @@ productRoutes.route("/reviews/:id").post(protectRoute, createProductReview);
 //productRoutes.route("/category/:category").get(getProductsByCategory);
 productRoutes.route("/:id").delete(protectRoute, isAdmin, deleteProductById);
 productRoutes.route("/").post(protectRoute, isAdmin, createNewProduct);
-productRoutes.route("/").put(protectRoute, isAdmin, updateProduct);
+productRoutes.route("/:id").put(protectRoute, isAdmin, updateProduct);
 productRoutes
   .route("/:id/:reviewId")
   .put(protectRoute, isAdmin, removeProductReview);
