@@ -32,20 +32,20 @@ const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
 app.use("/live", express.static(path.join(__dirname, "/live")));
 
+app.get("/api/config/google", (req, res) => {
+  res.send(process.env.GOOGLE_CLIENT_ID);
+});
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
   app.get("*", (req, res) =>
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
   );
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running...");
+  });
 }
-
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
-
-app.get("/api/config/google", (req, res) => {
-  res.send(process.env.GOOGLE_CLIENT_ID);
-});
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port: ${PORT}`);
