@@ -1,8 +1,5 @@
 import nodemailer from "nodemailer";
 
-// email: muhamed.begic01@gmail.com
-// password: nnsf mkuu beuv uyji
-
 export const sendVerificationEmail = (token, email, name, id) => {
   const html = `
         <html>
@@ -18,17 +15,17 @@ export const sendVerificationEmail = (token, email, name, id) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "muhamed.begic01@gmail.com",
-      pass: "nnsf mkuu beuv uyji",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: "Shopium <noreply.muhamed.begic01@gmail.com>",
+    from: `Shopium <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Account verification",
     html: html,
-    replyTo: "noreply.muhamed.begic01@gmail.com",
+    replyTo: process.env.EMAIL_USER,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {

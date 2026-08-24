@@ -44,6 +44,7 @@ const registerUser = expressAsyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400).send("User with that email already exists!");
+    return;
   }
 
   const user = await User.create({

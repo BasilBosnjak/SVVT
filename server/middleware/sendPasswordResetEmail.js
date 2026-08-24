@@ -15,17 +15,17 @@ export const sendPasswordResetEmail = (token, email, name) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "muhamed.begic01@gmail.com",
-      pass: "nnsf mkuu beuv uyji",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: "Shopium <noreply.muhamed.begic01@gmail.com>",
+    from: `Shopium <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Password recovery",
     html: html,
-    replyTo: "noreply.muhamed.begic01@gmail.com",
+    replyTo: process.env.EMAIL_USER,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
