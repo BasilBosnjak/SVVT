@@ -30,7 +30,9 @@ const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    res.send(403);
+    res.status(403).send(
+      "Unathorized, you don't have permission to view this content."
+    );
     throw new Error(
       "Unathorized, you don't have permission to view this content."
     );

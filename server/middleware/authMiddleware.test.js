@@ -20,10 +20,15 @@ describe("isAdmin middleware", () => {
     expect(res.status).not.toHaveBeenCalled();
   });
 
-  // test.failing: documents the known isAdmin bug (res.send(403) instead of
-  // res.status(403)) as an executable spec. Currently fails as expected; once
-  // the bug is fixed (Bug Reports and Fixes phase), flip back to test().
-  test.failing("responds with HTTP 403 when req.user.isAdmin is false", () => {
+  // Previously the source called the deprecated res.send(403) shorthand
+  // instead of res.status(403).send(...). Express actually special-cases
+  // res.send(<number>) to set the real status code too (with a deprecation
+  // warning), so the live HTTP behavior was already 403 — but this mock
+  // doesn't replicate that legacy shim, so the old code made this assertion
+  // fail even though nothing was wrong for real users. Fixed to use the
+  // non-deprecated, explicit form, which is both clearer and no longer
+  // depends on Express's legacy shorthand.
+  test("responds with HTTP 403 when req.user.isAdmin is false", () => {
     const req = { user: { isAdmin: false } };
     const res = mockRes();
     const next = jest.fn();
@@ -33,7 +38,7 @@ describe("isAdmin middleware", () => {
     expect(res.status).toHaveBeenCalledWith(403);
   });
 
-  test.failing("responds with HTTP 403 when req.user is missing entirely", () => {
+  test("responds with HTTP 403 when req.user is missing entirely", () => {
     const req = {};
     const res = mockRes();
     const next = jest.fn();

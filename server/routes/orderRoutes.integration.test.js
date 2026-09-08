@@ -19,7 +19,7 @@ describe("GET /api/orders — access control decision table", () => {
     expect(res.status).toBe(401);
   });
 
-  test("valid token, non-admin user -> expected 403, but currently gets 200 (confirms isAdmin bug)", async () => {
+  test("valid token, non-admin user -> 403 Forbidden", async () => {
     const user = await User.create({
       name: "Regular User",
       email: "regular@example.com",

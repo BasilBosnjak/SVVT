@@ -64,7 +64,7 @@ Unlike the reference example project (which tested a live third-party site with 
 - **Guest checkout** — doesn't exist in this app (`CheckoutScreen` redirects to `/login` if unauthenticated), unlike the Bershka example.
 
 **Suspected defects already spotted during code reading** (to be confirmed with actual test execution, not fixed yet):
-- `authMiddleware.js`'s `isAdmin` calls `res.send(403)` instead of `res.status(403).send(...)` — a non-admin hitting an admin-only route likely gets an HTTP 200 with body `"403"` rather than an actual 403 status.
+- `authMiddleware.js`'s `isAdmin` calls the deprecated `res.send(403)` shorthand instead of `res.status(403).send(...)` — suspected to send an HTTP 200 with body `"403"` rather than an actual 403 status. *(Update, Section 4: Express actually special-cases `res.send(<number>)` to set the real status code too, so this turned out not to be a live bug — see the correction there.)*
 - `User.js`'s pre-save hook calls `next()` without `return`ing when the password hasn't changed, then falls through and re-hashes `this.password` anyway — every save of a user (e.g. email verification, `firstLogin` flag update) may re-hash an already-hashed password, potentially breaking login after that save.
 - `stripeRoutes.js` creates the `Order` and decrements product `stock` immediately after creating the Stripe session — *before* the user has actually paid. Cancelling on Stripe's hosted checkout page likely still leaves behind a persisted order and reduced stock.
 
@@ -95,10 +95,10 @@ Detailed test cases are written up alongside each testing phase (unit/integratio
 
 | Suite | What it covers | Result |
 |---|---|---|
-| `server/middleware/authMiddleware.test.js` | `isAdmin`: allows admins through, blocks non-admins/missing user with an expected HTTP 403 | 1 pass, 2 `test.failing` (fail as expected) |
+| `server/middleware/authMiddleware.test.js` | `isAdmin`: allows admins through, blocks non-admins/missing user with an expected HTTP 403 | 1 pass, 2 `test.failing` (fail as expected — later found to be a false alarm, see Section 8) |
 | `server/models/User.test.js` | `User.matchPasswords`: correct password → true, wrong password → false | 2/2 pass |
 
-**Confirmed bug:** the two `test.failing` cases confirm the defect flagged in the test plan — `res.send(403)` is called instead of `res.status(403)`, so `res.status` is never invoked and a blocked request doesn't actually get a 403 status code. `test.failing` documents this as an executable spec (suite stays green; Jest will complain loudly the moment this starts passing, i.e. the moment it's actually fixed). Left **unfixed for now**; the real fix happens in the dedicated Bug Reports and Fixes phase.
+**Apparent bug (later corrected — see Section 8):** the two `test.failing` cases initially looked like they confirmed the defect flagged in the test plan — `res.send(403)` instead of `res.status(403)`, so `res.status` is never explicitly invoked. This turned out to be a flaw in the *test's mock*, not the app: Express actually special-cases `res.send(<number>)` to set the real status code too (with a deprecation warning), so live requests were already getting a real 403. Fixed anyway in Section 8 (deprecated API, worth cleaning up) — but it was never an active bug affecting users.
 
 ---
 
@@ -112,7 +112,7 @@ Detailed test cases are written up alongside each testing phase (unit/integratio
 |---|---|
 | `userRoutes.integration.test.js` | register (valid, duplicate email), login (correct/wrong password, unknown email), and a **regression check** for the suspected password-re-hash bug |
 | `productRoutes.integration.test.js` | product listing, pagination boundary (page past the last result), fetch-by-id (found/not-found) |
-| `orderRoutes.integration.test.js` | admin-route access decision table: no token → 401, non-admin token → confirms `isAdmin` bug, admin token → 200 |
+| `orderRoutes.integration.test.js` | admin-route access decision table: no token → 401, non-admin token → 403, admin token → 200 |
 
 **Result:** 17/17 pass across all 5 suites (2 unit + 3 integration).
 
@@ -129,7 +129,7 @@ Node.js v24.18.0        ← process exits here
 
 This means **any client requesting a nonexistent or malformed product id can crash the live server** — a real availability/DoS-flavored defect, not just a wrong status code. Deliberately **not** exercised repeatedly inside the automated suite (re-triggering a process-crashing rejection inside a shared Jest worker is itself unsafe); the two other route handlers with the same unwrapped-`async` pattern (`getProducts`, `createProductReview`) likely share this risk and should be checked in the Bug Reports and Fixes phase. This is the most severe finding of the project so far — left unfixed for now, but should be prioritized first when fixes are applied.
 
-**Confirmed bug — admin route access:** the `orderRoutes` decision-table test confirms the `isAdmin` bug at the real HTTP level too (not just unit-level): a non-admin authenticated user gets `200` instead of `403` from `GET /api/orders`.
+**Correction to the suspected `isAdmin` bug:** unlike the unit-level mock, this integration test hits the real Express app end-to-end — and it passed even *before* any fix (`GET /api/orders` correctly returned `403` for a non-admin user, both with the original code and after). This confirms the "bug" from Section 3 was never actually live: Express's deprecated `res.send(<number>)` shorthand still sets the real status code, so no real request was ever affected. See Section 8 for what was actually changed and why.
 
 ---
 
