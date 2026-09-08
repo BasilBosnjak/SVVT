@@ -15,13 +15,13 @@ const protectRoute = expressAsyncHandler(async (req, res, next) => {
 
       next();
     } catch (error) {
-      res.status(401);
+      res.status(401).json({ message: "Unauthorized, authentication failed." });
       throw new Error("Unauthorized, authentication failed.");
     }
   }
 
   if (!token) {
-    res.status(401);
+    res.status(401).json({ message: "Unauthorized, missing token." });
     throw new Error("Unauthorized, missing token.");
   }
 });
@@ -30,9 +30,9 @@ const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    res.status(403).send(
-      "Unathorized, you don't have permission to view this content."
-    );
+    res.status(403).json({
+      message: "Unathorized, you don't have permission to view this content.",
+    });
     throw new Error(
       "Unathorized, you don't have permission to view this content."
     );

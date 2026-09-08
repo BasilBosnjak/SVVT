@@ -33,7 +33,7 @@ const loginUser = expressAsyncHandler(async (req, res) => {
       active: user.active,
     });
   } else {
-    res.status(401).send("Invalid Email or Password!");
+    res.status(401).json({ message: "Invalid Email or Password!" });
     throw new Error("User not found!");
   }
 });
@@ -43,7 +43,7 @@ const registerUser = expressAsyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400).send("User with that email already exists!");
+    res.status(400).json({ message: "User with that email already exists!" });
     return;
   }
 
@@ -71,7 +71,7 @@ const registerUser = expressAsyncHandler(async (req, res) => {
       createdAt: user.createdAt,
     });
   } else {
-    res.status(400).send("Unable to register!");
+    res.status(400).json({ message: "Unable to register!" });
     throw new Error(
       "Something went wrong. Please check your credentials and try again!"
     );
@@ -96,7 +96,7 @@ const passwordResetRequest = expressAsyncHandler(async (req, res) => {
       res.status(200).send(`Password recovery email sent to ${email}`);
     }
   } catch (error) {
-    res.status(401).send("Account with that email doesn't exist.");
+    res.status(401).json({ message: "Account with that email doesn't exist." });
   }
 });
 
@@ -111,10 +111,10 @@ const passwordReset = expressAsyncHandler(async (req, res) => {
       await user.save();
       res.json("Password updated successfully.");
     } else {
-      res.status(404).send("User not found!");
+      res.status(404).json({ message: "User not found!" });
     }
   } catch (error) {
-    res.status(401).send("Password reset failed");
+    res.status(401).json({ message: "Password reset failed" });
   }
 });
 
@@ -164,14 +164,14 @@ const googleLogin = expressAsyncHandler(async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(404).send("Something went wrong, try again later!");
+    res.status(404).json({ message: "Something went wrong, try again later!" });
   }
 });
 
 const getUserOrders = expressAsyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.params.id });
   if (!orders) {
-    res.status(404).send("No orders could be found!");
+    res.status(404).json({ message: "No orders could be found!" });
     throw new Error("No Orders found!");
   } else {
     res.status(200).json(orders);
@@ -188,7 +188,7 @@ const deleteUserById = expressAsyncHandler(async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     res.json(user);
   } catch (error) {
-    res.status(404).send("User not found!");
+    res.status(404).json({ message: "User not found!" });
     throw new Error("User could not be deleted!");
   }
 });

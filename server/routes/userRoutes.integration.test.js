@@ -55,12 +55,15 @@ describe("POST /api/users/login", () => {
     expect(res.body.token).toBeDefined();
   });
 
-  test("rejects login with the wrong password", async () => {
+  test("rejects login with the wrong password, with a message the client can actually read", async () => {
     const res = await request(app)
       .post("/api/users/login")
       .send({ email: validUser.email, password: "wrong-password" });
 
     expect(res.status).toBe(401);
+    // Previously a plain-text body, which the client's error.response.data.message
+    // read as undefined — the user only ever saw Axios's generic error text.
+    expect(res.body.message).toBe("Invalid Email or Password!");
   });
 
   test("rejects login for an email that was never registered", async () => {
