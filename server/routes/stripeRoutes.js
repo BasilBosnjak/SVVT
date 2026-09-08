@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import e from "express";
 import Stripe from "stripe";
+import expressAsyncHandler from "express-async-handler";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import { protectRoute } from "../middleware/authMiddleware.js";
@@ -10,7 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_API_SECRET);
 
 const stripeRoute = e.Router();
 
-const stripePayment = async (req, res) => {
+const stripePayment = expressAsyncHandler(async (req, res) => {
   const data = req.body;
   console.log(req.body);
 
@@ -64,7 +65,7 @@ const stripePayment = async (req, res) => {
   res.send(
     JSON.stringify({ orderId: newOrder._id.toString(), url: session.url })
   );
-};
+});
 
 stripeRoute.route("/").post(protectRoute, stripePayment);
 

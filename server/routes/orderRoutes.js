@@ -5,10 +5,10 @@ import { protectRoute, isAdmin } from "../middleware/authMiddleware.js";
 
 const orderRoutes = express.Router();
 
-const getOrders = async (req, res) => {
+const getOrders = expressAsyncHandler(async (req, res) => {
   const orders = await Order.find({});
   res.json(orders);
-};
+});
 
 const getOrderById = expressAsyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);

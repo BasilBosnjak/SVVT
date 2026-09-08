@@ -6,7 +6,7 @@ import expressAsyncHandler from "express-async-handler";
 
 const productRoutes = express.Router();
 
-const getProducts = async (req, res) => {
+const getProducts = expressAsyncHandler(async (req, res) => {
   const page = parseInt(req.params.page); // pages, ex: 1, 2, 3
   const limit = parseInt(req.params.limit); // items per page, ex: 10, 15, 20
 
@@ -24,9 +24,9 @@ const getProducts = async (req, res) => {
   } else {
     res.json({ products, pagination: {} });
   }
-};
+});
 
-const getProductById = async (req, res) => {
+const getProductById = expressAsyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (!product) {
     res.status(404).send("Product not found!");
@@ -34,7 +34,7 @@ const getProductById = async (req, res) => {
   } else {
     res.json(product);
   }
-};
+});
 
 /*
 const getProductsByCategory = async (req, res) => {
@@ -49,7 +49,7 @@ const getProductsByCategory = async (req, res) => {
 };
 */
 
-const createProductReview = async (req, res) => {
+const createProductReview = expressAsyncHandler(async (req, res) => {
   const { rating, comment, userId, title } = req.body;
 
   const product = await Product.findById(req.params.id);
@@ -85,7 +85,7 @@ const createProductReview = async (req, res) => {
     res.status(404).send("Product not found!");
     throw new Error("Product does not exist.");
   }
-};
+});
 
 const createNewProduct = expressAsyncHandler(async (req, res) => {
   const {

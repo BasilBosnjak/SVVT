@@ -50,14 +50,24 @@ describe("GET /api/products/:id", () => {
     expect(res.body.name).toBe("Test Product");
   });
 
-  // NOTE: requests for a well-formed-but-nonexistent id, or a malformed id,
-  // are deliberately NOT exercised here. getProductById isn't wrapped in
-  // expressAsyncHandler, so its error path (`throw` after res.send(), or the
-  // CastError from an invalid id) is an unhandled promise rejection — and on
-  // Node 15+ (default config, which is what this app runs on) an unhandled
-  // rejection crashes the whole process. Manually confirmed outside Jest
-  // (see docs/report.md, Section 4) rather than repeatedly re-triggering a
-  // process-crashing bug inside the automated suite. This is the most
-  // critical finding of this testing pass — left unfixed for now, pending
-  // the dedicated Bug Reports and Fixes phase.
+  // Previously these two cases crashed the whole Node process (see
+  // docs/report.md, Section 4 and 8) because getProductById wasn't wrapped in
+  // expressAsyncHandler. Now that it is, both are safe to exercise directly.
+  test("returns 404 for a well-formed but non-existent id", async () => {
+    const fakeId = "64b64e5f5f5f5f5f5f5f5f5f";
+
+    const res = await request(app).get(`/api/products/${fakeId}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  // Now cleanly errors (500, via Express's default error handler) instead of
+  // hanging/crashing the whole process. A 400 would be a nicer response than
+  // a bare 500, but that's a minor follow-up — the critical fix (no crash)
+  // is what mattered here.
+  test("returns a clean error response (not a hang/crash) for a malformed id", async () => {
+    const res = await request(app).get("/api/products/not-a-valid-object-id");
+
+    expect(res.status).toBe(500);
+  });
 });
