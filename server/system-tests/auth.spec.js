@@ -44,17 +44,16 @@ test.describe("Register form validation (no submit)", () => {
 });
 
 test.describe("Login", () => {
-  test("wrong credentials show an error (documents a UX bug — see docs/report.md)", async ({ page }) => {
+  test("wrong credentials show the real server error message", async ({ page }) => {
     await page.goto("/login");
 
     await page.fill('input[name="email"]', "nobody-really@example.com");
     await page.fill('input[name="password"]', "wrongpassword123");
     await page.locator('button[type="submit"]').getByText("Sign in", { exact: true }).click();
 
-    // The server actually sends "Invalid Email or Password!" as plain text,
-    // but the client can only surface Axios's generic message because it
-    // reads error.response.data.message (undefined for a non-JSON body).
-    // Confirmed bug, documented rather than fixed for now.
-    await expect(page.getByText(/request failed with status code 401/i)).toBeVisible();
+    // Previously showed Axios's generic "Request failed with status code 401"
+    // because the server sent a plain-text body instead of JSON (see
+    // docs/report.md, Section 8, bug #4) — now fixed and confirmed live here.
+    await expect(page.getByText(/invalid email or password/i)).toBeVisible();
   });
 });

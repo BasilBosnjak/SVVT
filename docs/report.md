@@ -188,7 +188,7 @@ This confirms the boundary-value test written in Section 4 is doing real work �
 
 ## 8. Bug Reports and Fixes
 
-All fixes below are committed locally (one commit per fix, each verified against the full local test suite before committing) but **not pushed** — the app is auto-deployed from this repo on Render, so pushing is held until these are reviewed and pushed deliberately, not as a side effect of testing work.
+All fixes below were committed locally (one commit per fix, each verified against the full local test suite before committing), reviewed, and then pushed to `origin/main` — the app is auto-deployed from this repo on Render, so all four are now **live in production**.
 
 | # | Bug | Severity | Status |
 |---|---|---|---|
@@ -201,7 +201,7 @@ All fixes below are committed locally (one commit per fix, each verified against
 
 **Scope note on bug #4:** originally scoped to the login endpoint only (found via system testing, Section 5). Checking how widespread the underlying pattern was (`res.status(x).send("string")` vs. the client's `error.response.data.message`) turned up 18 more identical cases across `orderRoutes.js`, `productRoutes.js`, and `userRoutes.js`. All were fixed together, since it's the same one-line mechanical change repeated consistently. Success-path plain-text responses (e.g. the password-reset-request confirmation, which the client reads as a raw string, not via `.message`) were deliberately left untouched.
 
-**Verification:** the full local suite (unit + integration) passes after each fix — 20/20 tests. System tests (Section 5) were **not** re-run against production for this, since they exercise the live, not-yet-deployed site; the login system test will need re-confirming once these fixes are actually pushed and deployed.
+**Verification:** the full local suite (unit + integration) passes after each fix — 20/20 tests. After the fixes were pushed and deployed, the login system test (Section 5) was re-run directly against production: it previously asserted the buggy generic message and now asserts (and confirms) the real one — `GET /login` with wrong credentials shows **"Invalid Email or Password!"** live, no longer "Request failed with status code 401". Full system suite re-run post-deploy: 11/11 pass.
 
 ---
 
@@ -217,7 +217,7 @@ All fixes below are committed locally (one commit per fix, each verified against
 | System (black-box) testing | Playwright, against the live production site | 11 tests — navigation, cart, form validation, responsiveness |
 | Regression testing | Jest | 1 deliberately injected bug, caught by exactly 1 test, then reverted |
 | Coverage analysis | Jest `--coverage` | 44% statements across `server/`, concentrated on in-scope flows |
-| Bugs found | — | 4, all now fixed locally (commits `ae1a0cc`, `6914cc5`, `670837b`, `50f02c8`; not yet pushed) |
+| Bugs found | — | 4, all fixed and deployed to production (commits `ae1a0cc`, `6914cc5`, `670837b`, `50f02c8`) |
 
 **31 automated tests total** (20 Jest + 11 Playwright), all passing as of this writing.
 
@@ -229,4 +229,4 @@ Not every suspicion held up, though — the `isAdmin` "wrong status code" bug (S
 
 The most severe finding — a single malformed URL parameter crashing the entire live server — was also the easiest to fix (one word, `expressAsyncHandler`, repeated five times), which is a useful thing to have on record: high-severity bugs aren't always the hardest to fix, and low-effort defensive patterns (consistently wrapping async route handlers) prevent a whole category of them at once.
 
-**Remaining work**, left deliberately out of scope for this pass and worth stating plainly rather than leaving implicit: real Stripe payment completion was never exercised; client-side (React component) test coverage is at 0%; the admin write endpoints (create/update/delete product, order, user) are largely untested; and the four bug fixes above still need to be reviewed and pushed before they take effect on the live site.
+**Remaining work**, left deliberately out of scope for this pass and worth stating plainly rather than leaving implicit: real Stripe payment completion was never exercised; client-side (React component) test coverage is at 0%; and the admin write endpoints (create/update/delete product, order, user) are largely untested.
