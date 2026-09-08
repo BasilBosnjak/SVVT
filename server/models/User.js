@@ -46,7 +46,7 @@ userSchema.methods.matchPasswords = async function (enteredPassword) {
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    next();
+    return next();
   }
 
   const salt = await bcrypt.genSalt(10);
