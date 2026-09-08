@@ -185,3 +185,22 @@ This confirms the boundary-value test written in Section 4 is doing real work �
 **Assessment:** coverage is concentrated on the flows called out as in-scope in the test plan (auth happy/error paths, product read/pagination, admin access control) rather than spread thin. The clearest real gap is the **admin write endpoints** (product/order/user management) — untested, and exactly the kind of surface where the same "missing `expressAsyncHandler`" pattern behind the process-crash bug (Section 4) could be lurking elsewhere. Worth checking when the Bug Reports and Fixes phase addresses that bug family. Client-side coverage wasn't measured — no component-level tests were written for the React app in this pass.
 
 ---
+
+## 8. Bug Reports and Fixes
+
+All fixes below are committed locally (one commit per fix, each verified against the full local test suite before committing) but **not pushed** — the app is auto-deployed from this repo on Render, so pushing is held until these are reviewed and pushed deliberately, not as a side effect of testing work.
+
+| # | Bug | Severity | Status |
+|---|---|---|---|
+| 1 | Unhandled async errors crashed the whole process (`getProductById` and 4 others weren't wrapped in `expressAsyncHandler`) | Critical | **Fixed** — wrapped in `expressAsyncHandler` |
+| 2 | `isAdmin` used the deprecated `res.send(403)` shorthand | Low (see correction below) | **Fixed** — now explicit `res.status(403).json(...)` |
+| 3 | `User` pre-save hook re-hashed an unmodified password | Low, harmless in practice | **Fixed** — added missing `return` |
+| 4 | Server sent plain-text error bodies; client expects JSON `.message` — affected **every** error response in the app, not just login | Medium (broad UX impact) | **Fixed** — all 19 error-path responses now `res.json({ message })` |
+
+**Correction on bug #2:** the initial unit test (Section 3) suggested non-admins were getting HTTP 200 instead of 403. Re-checking at the integration level (real Express + Supertest, no mocks) showed the *original* code already returned a real 403 — Express special-cases the deprecated `res.send(<number>)` shorthand to also set the actual status code. The unit test's hand-rolled `res` mock didn't replicate that legacy behavior, producing a false alarm. The fix was still applied (removes the deprecation warning and a dependency on legacy behavior that could be dropped in a future Express version), but it's a code-quality change, not a user-facing one. Kept in this report as an example of why a suspected bug should be confirmed against real end-to-end behavior before being written up as confirmed.
+
+**Scope note on bug #4:** originally scoped to the login endpoint only (found via system testing, Section 5). Checking how widespread the underlying pattern was (`res.status(x).send("string")` vs. the client's `error.response.data.message`) turned up 18 more identical cases across `orderRoutes.js`, `productRoutes.js`, and `userRoutes.js`. All were fixed together, since it's the same one-line mechanical change repeated consistently. Success-path plain-text responses (e.g. the password-reset-request confirmation, which the client reads as a raw string, not via `.message`) were deliberately left untouched.
+
+**Verification:** the full local suite (unit + integration) passes after each fix — 20/20 tests. System tests (Section 5) were **not** re-run against production for this, since they exercise the live, not-yet-deployed site; the login system test will need re-confirming once these fixes are actually pushed and deployed.
+
+---
