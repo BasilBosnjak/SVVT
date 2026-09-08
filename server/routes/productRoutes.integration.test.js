@@ -1,11 +1,18 @@
+process.env.TOKEN_SECRET = "test-secret";
+
+import jwt from "jsonwebtoken";
 import request from "supertest";
 import app from "../app.js";
 import Product from "../models/Product.js";
+import User from "../models/User.js";
 import { connect, clearDatabase, closeDatabase } from "../test-utils/dbTestServer.js";
 
 beforeAll(async () => await connect());
 afterEach(async () => await clearDatabase());
 afterAll(async () => await closeDatabase());
+
+const tokenFor = (userId) =>
+  jwt.sign({ id: userId }, process.env.TOKEN_SECRET, { expiresIn: "2h" });
 
 const makeProduct = (overrides = {}) =>
   Product.create({
@@ -69,5 +76,54 @@ describe("GET /api/products/:id", () => {
     const res = await request(app).get("/api/products/not-a-valid-object-id");
 
     expect(res.status).toBe(500);
+  });
+});
+
+describe("POST /api/products/reviews/:id", () => {
+  const makeReviewer = () =>
+    User.create({ name: "Reviewer", email: "reviewer@example.com", password: "password123" });
+
+  test("submits a review with a title", async () => {
+    const product = await makeProduct();
+    const user = await makeReviewer();
+
+    const res = await request(app)
+      .post(`/api/products/reviews/${product._id}`)
+      .set("Authorization", `Bearer ${tokenFor(user._id)}`)
+      .send({ comment: "Great!", userId: user._id.toString(), rating: 5, title: "Nice" });
+
+    expect(res.status).toBe(201);
+  });
+
+  // Regression test: the review form's title field is explicitly labeled
+  // "(optional)" in the UI, but the schema required it, so any real user
+  // leaving it blank got a 500 (reported live: "reviews return a 500").
+  // Reproduced locally, fixed by dropping `required: true` from
+  // Product.js's reviewSchema.title.
+  test("submits a review with no title (the UI marks it optional)", async () => {
+    const product = await makeProduct();
+    const user = await makeReviewer();
+
+    const res = await request(app)
+      .post(`/api/products/reviews/${product._id}`)
+      .set("Authorization", `Bearer ${tokenFor(user._id)}`)
+      .send({ comment: "Great!", userId: user._id.toString(), rating: 5, title: "" });
+
+    expect(res.status).toBe(201);
+  });
+
+  test("rejects a second review from the same user", async () => {
+    const product = await makeProduct();
+    const user = await makeReviewer();
+    const submit = () =>
+      request(app)
+        .post(`/api/products/reviews/${product._id}`)
+        .set("Authorization", `Bearer ${tokenFor(user._id)}`)
+        .send({ comment: "Great!", userId: user._id.toString(), rating: 5, title: "Nice" });
+
+    await submit();
+    const res = await submit();
+
+    expect(res.status).toBe(400);
   });
 });
