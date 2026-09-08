@@ -216,13 +216,13 @@ All fixes below were committed locally (one commit per fix, each verified agains
 |---|---|---|
 | Static analysis | ESLint, `npm audit` | 16 client + 3 server lint warnings (dead code, documented); 2 real-risk CVEs flagged (mongoose, jws), rest transitive/dev-only noise |
 | Unit testing | Jest | 5 tests — isolated `isAdmin` and `User.matchPasswords` logic |
-| Integration testing | Jest + Supertest + in-memory MongoDB | 15 tests — auth, product listing/pagination, admin access control |
+| Integration testing | Jest + Supertest + in-memory MongoDB | 18 tests — auth, product listing/pagination/reviews, admin access control |
 | System (black-box) testing | Playwright, against the live production site | 11 tests — navigation, cart, form validation, responsiveness |
 | Regression testing | Jest | 1 deliberately injected bug, caught by exactly 1 test, then reverted |
 | Coverage analysis | Jest `--coverage` | 44% statements across `server/`, concentrated on in-scope flows |
-| Bugs found | — | 4, all fixed and deployed to production (commits `ae1a0cc`, `6914cc5`, `670837b`, `50f02c8`) |
+| Bugs found | — | 5 found, 5 fixed (4 deployed to production: commits `ae1a0cc`, `6914cc5`, `670837b`, `50f02c8`; 1 committed locally: `c5f9feb`) |
 
-**31 automated tests total** (20 Jest + 11 Playwright), all passing as of this writing.
+**34 automated tests total** (23 Jest + 11 Playwright), all passing as of this writing.
 
 ### 9.2. Final Thoughts
 
@@ -231,5 +231,7 @@ Having both the source code and a live deployment changed the shape of this proj
 Not every suspicion held up, though — the `isAdmin` "wrong status code" bug (Section 3) looked confirmed at the unit level but turned out to be a false alarm once checked against real Express behavior (Section 4). That correction is arguably as valuable a result as the real bugs: a reminder that a mock is only as good as how faithfully it represents the real system, and that a suspected bug belongs in a report as *confirmed* only after it's been reproduced end-to-end, not just inferred from source or a hand-rolled test double.
 
 The most severe finding — a single malformed URL parameter crashing the entire live server — was also the easiest to fix (one word, `expressAsyncHandler`, repeated five times), which is a useful thing to have on record: high-severity bugs aren't always the hardest to fix, and low-effort defensive patterns (consistently wrapping async route handlers) prevent a whole category of them at once.
+
+Bug #5 (review submission 500) came in after this report's "final" sections were already written — the user found it live and reported it directly, rather than it surfacing from a planned test pass. It's left in as evidence that this VVT process didn't stop being useful once the formal phases were done: the same reproduce-first, minimal-fix, add-a-regression-test discipline applied just as well to an ad hoc bug report as it did to the planned phases.
 
 **Remaining work**, left deliberately out of scope for this pass and worth stating plainly rather than leaving implicit: real Stripe payment completion was never exercised; client-side (React component) test coverage is at 0%; and the admin write endpoints (create/update/delete product, order, user) are largely untested.
